@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Redis = require('ioredis');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt'); 
 const { body,validationResult} = require('express-validator');
 
 const redis = new Redis({
@@ -9,6 +9,23 @@ const redis = new Redis({
   port: 6379,
   password: null,
 });
+
+redis.call('FT.CREATE', 'usersidx', 'ON', 'HASH', 'PREFIX', '1', 'users', 'SCHEMA', 'email', 'TAG', 'firstName', 'TEXT', 'lastName', 'TEXT', (err, result) => { 
+  if (err) {
+    console.log(err)
+    console.log("Error creating users index");
+  }
+  else{
+    console.log("Users index has been created")
+  }
+})
+
+// .catch(e => {
+//   console.log(e["ReplyError"])
+//   if(e.includes('Index already exists')){
+//     console.log("Users index is already create")
+//   }
+// });
 
 router.get('/api/health', (req, res) => {
   //console.log(req.query)
@@ -35,7 +52,7 @@ router.post('/api/register', [
 
   const emailAddress = req.body["email"].replace(/\./g, '\\.').replace(/\@/g, '\\@');
 
-  const searchResults = await redis.call('FT.SEARCH', 'ncc:usersidx', `@email:{${emailAddress}}`, 'LIMIT', '0', '1')
+  const searchResults = await redis.call('FT.SEARCH', 'usersidx', `@email:{${emailAddress}}`, 'LIMIT', '0', '1')
 
   if (searchResults[0] !== 0) {
     return res.json("Email is already taken")
@@ -49,7 +66,7 @@ router.post('/api/register', [
   const obj = {"id" : id, "email" : req.body['email'], 'password' : passwordHash}
   console.log(obj)
   
-  const insertResults = redis.hset(`ncc:users:${id}`, obj)
+  const insertResults = redis.hset(`users:${id}`, obj)
   if (insertResults[0] !== null) {
     return res.json("Registered Successfuly")
   }
