@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const Redis = require('ioredis');
-const bcrypt = require('bcrypt'); 
 const { body,validationResult} = require('express-validator');
+const { json } = require('body-parser');
+const register = require('../models/register.js');
+const Redis = require('ioredis');
 
 const redis = new Redis({
   host: "localhost",
@@ -50,29 +51,15 @@ router.post('/api/register', [
 
   console.log(req.body)
 
-  const emailAddress = req.body["email"].replace(/\./g, '\\.').replace(/\@/g, '\\@');
-
-  const searchResults = await redis.call('FT.SEARCH', 'usersidx', `@email:{${emailAddress}}`, 'LIMIT', '0', '1')
-
-  if (searchResults[0] !== 0) {
-    return res.json("Email is already taken")
-  }
-
-  const passwordHash = await bcrypt.hash(req.body["password"], 10)
-  
-  const id = Math.floor(Math.random() * 1000 + 1000);
-  console.log(id)
-
-  const obj = {"id" : id, "email" : req.body['email'], 'password' : passwordHash}
-  console.log(obj)
-  
-  const insertResults = redis.hset(`users:${id}`, obj)
-  if (insertResults[0] !== null) {
-    return res.json("Registered Successfuly")
-  }
-  
-  return res.status(400).json("Encountered an error")
-
+  register(req.body, redis, function(result){
+    //console.log(result)
+    if(result === 'Registered'){
+      res.json(result)
+    }
+    else{
+      return res.status(400).json(result)
+    }
+  })
 });
 
 
