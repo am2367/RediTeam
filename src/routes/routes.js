@@ -4,6 +4,8 @@ const { body,validationResult} = require('express-validator');
 const { json } = require('body-parser');
 const register = require('../models/register.js');
 const createNodes = require('../models/createNodes.js');
+const updateTeam = require('../models/updateTeam.js');
+const createReq = require('../models/createReq.js');
 const updateRelationships = require('../models/updateRelationships.js');
 
 const Redis = require('ioredis');
@@ -85,7 +87,43 @@ router.post('/api/profile', [
     
 });
 
+router.post('/api/team', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  console.log(req.body)
 
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+
+  updateTeam(req.body, redis, function(result){
+    console.log(result)
+    res.json(result)
+  })
+});
+
+router.post('/api/team/req', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  console.log(req.body)
+
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+
+  createReq(req.body, redis, function(result){
+    console.log(result)
+    res.json(result)
+  })
+});
 
 
 

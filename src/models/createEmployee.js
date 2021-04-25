@@ -21,10 +21,19 @@ const createEmployee = async (body, redis, callback) => {
     pipeline.call("GRAPH.QUERY", "Employee", `MATCH(e:Employee${newBody}) MATCH(o:OfficeLocation{name:"${body['officeLocation']}"}) MERGE(e)-[r:Is_Closest_To]->(o)`)
     expectedResponses += 1
 
+    //Create team node if not exists
+    //Create relationship to team if not exists
+    pipeline.call("GRAPH.QUERY", "Employee", `MATCH(e:Employee${newBody}) MERGE(t:Team{name:"${body['teamName']}"}) MERGE(e)-[r:Is_Part_Of]->(t)`)
+    expectedResponses += 1
+
+    //Create manager node if not exists
+    //Create relationship to manager if not exists
+    //Create relationship between manager and team if not exists
+    pipeline.call("GRAPH.QUERY", "Employee", `MATCH(e:Employee${newBody}) MATCH(t:Team{name:"${body['teamName']}"}) MERGE(manager:Employee{name:"${body['manager']}"}) MERGE(e)-[r:Is_Managed_By]->(manager) MERGE(manager)-[r2:Is_Part_Of]->(t)`)
+    expectedResponses += 1
+
     const responses = await pipeline.exec();
 
-    expectedResponses += body['programmingLanguages'].length
-    
     // Need to update below to check response for each pipeline call instead of just first one
     if (responses.length === expectedResponses && responses[0][1] !== null){
         console.log(responses[0][1])

@@ -8,7 +8,7 @@ const createNodes = async (redis, callback) => {
                                          "{name: 'Level 4', level: 4, years_experience: 10, cost: 200000}"]
 
     for(var detail of associateLevelDetailMapping){
-        pipeline.call("GRAPH.QUERY", "Employee", `CREATE(:AssociateLevel${detail})`)
+        pipeline.call("GRAPH.QUERY", "Employee", `MERGE(:AssociateLevel${detail})`)
     }
 
     //Create Office Location Nodes
@@ -17,7 +17,7 @@ const createNodes = async (redis, callback) => {
                              "{name: 'San Francisco', state : 'California', full_address : 'ABC 789, New York, NY 94016'}"]
 
     for(var office of officeLocations){
-        pipeline.call("GRAPH.QUERY", "Employee", `CREATE(:OfficeLocation${office})`)
+        pipeline.call("GRAPH.QUERY", "Employee", `MERGE(:OfficeLocation${office})`)
     }
 
     const responses = await pipeline.exec();
