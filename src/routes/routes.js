@@ -12,24 +12,44 @@ const updateRelationships = require('../models/updateRelationships.js');
 const Redis = require('ioredis');
 const createEmployee = require('../models/createEmployee.js');
 
+let redisGraph = null;
+let redisSearch = null
 
-const redis = new Redis({
-  host: "localhost",
-  port: 6379,
-  password: null,
-});
+if (process.env.REDIS_SEARCH_URL){
+  redisSearch = new Redis({
+    host: process.env.REDIS_SEARCH_URL,
+    port: process.env.REDIS_SEARCH_PORT,
+    password: process.env.REDIS_SEARCH_PASS
+  });
+  
+  redisGraph = new Redis({
+    host: process.env.REDIS_GRAPH_URL,
+    port: process.env.REDIS_GRAPH_PORT,
+    password: process.env.REDIS_GRAPH_PASS
+  });
+}
+//If local then use local redis
+else{
+  const redis = new Redis({
+    host: "localhost",
+    port: "6379",
+    password: ""
+  });
 
-redis.call('FT.CREATE', 'usersidx', 'ON', 'HASH', 'PREFIX', '1', 'users', 'SCHEMA', 'email', 'TAG', 'firstName', 'TEXT', 'lastName', 'TEXT', (err, result) => { 
+  redisSearch = redis
+  redisGraph = redis
+}
+
+redisSearch.call('FT.CREATE', 'usersidx', 'ON', 'HASH', 'PREFIX', '1', 'users', 'SCHEMA', 'email', 'TAG', 'firstName', 'TEXT', 'lastName', 'TEXT', (err, result) => { 
   if (err) {
-    console.log(err)
-    console.log("Error creating users index");
+    console.log(err.message)
   }
   else{
     console.log("Users index has been created")
   }
 })
 
-createNodes(redis, function(result){
+createNodes(redisGraph, function(result){
   console.log(result)
 });
 
@@ -41,7 +61,7 @@ router.get('/api/health', (req, res) => {
 router.get('/api/redis_health', (req, res) => {
   //console.log(req.query)
 
-  res.json(`Redis Connection Status: ${redis.status}`)
+  res.json(`RedisGraph Connection Status: ${redisGraph.status} || RedisSearch Connection Status: ${redisSearch.status}`)
 });
 
 router.post('/api/register', [
@@ -56,7 +76,7 @@ router.post('/api/register', [
 
   console.log(req.body)
 
-  register(req.body, redis, function(result){
+  register(req.body, redisSearch, function(result){
     //console.log(result)
     if(result === 'Registered'){
       console.log(result)
@@ -81,7 +101,7 @@ router.post('/api/login', [
 
   console.log(req.body)  
 
-  login(req.body, redis, function(result){
+  login(req.body, redisSearch, function(result){
     //console.log(result)
     if(result === 'Correct'){
       req.session.user = req.body['email'];
@@ -117,7 +137,7 @@ router.post('/api/profile', [
   //Add validation for JSON fields, possibly using express-validator
   //Get user's username/ID from session and include in JSON when creating graph node
 
-  createEmployee(req.body, redis, function(result){
+  createEmployee(req.body, redisGraph, function(result){
     console.log(result)
     res.json(result)
   })
@@ -138,7 +158,7 @@ router.post('/api/team', [
   //TODO
   //Add validation for JSON fields, possibly using express-validator
 
-  updateTeam(req.body, redis, function(result){
+  updateTeam(req.body, redisGraph, function(result){
     console.log(result)
     res.json(result)
   })
@@ -157,7 +177,7 @@ router.post('/api/team/req', [
   //TODO
   //Add validation for JSON fields, possibly using express-validator
 
-  createReq(req.body, redis, function(result){
+  createReq(req.body, redisGraph, function(result){
     console.log(result)
     res.json(result)
   })
