@@ -7,11 +7,22 @@ const bodyParser = require('body-parser');
 const RedisStore = require('connect-redis')(session);
 const Redis = require('ioredis');
 
-const redis = new Redis({
-  host: "localhost",
-  port: 6379,
-  password: null,
-});
+let redis = null;
+
+if (process.env.REDIS_SEARCH_URL){
+  redis = new Redis({
+    host: process.env.REDIS_SEARCH_URL,
+    port: process.env.REDIS_SEARCH_PORT,
+    password: process.env.REDIS_SEARCH_PASS
+  });
+}
+else{
+  redis = new Redis({
+    host: "localhost",
+    port: "6379",
+    password: ""
+  });
+}
 
 app.use(session({
   secret: 'CapOne',
