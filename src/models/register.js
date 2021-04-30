@@ -9,7 +9,7 @@ const register = async (req, redis, callback) => {
         callback("Email is already taken")
         return;
     }
-
+    console.log(req["password"])
     const passwordHash = await bcrypt.hash(req["password"], 10)
 
     const id = Math.floor(Math.random() * 1000 + 1000);

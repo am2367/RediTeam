@@ -3,13 +3,15 @@ const router = express.Router();
 const { body,validationResult} = require('express-validator');
 const { json } = require('body-parser');
 const register = require('../models/register.js');
+const login = require('../models/login.js');
 const createNodes = require('../models/createNodes.js');
 const updateTeam = require('../models/updateTeam.js');
 const createReq = require('../models/createReq.js');
+const checkSession = require('../models/checkSession.js');
 const updateRelationships = require('../models/updateRelationships.js');
-
 const Redis = require('ioredis');
 const createEmployee = require('../models/createEmployee.js');
+
 
 const redis = new Redis({
   host: "localhost",
@@ -57,12 +59,48 @@ router.post('/api/register', [
   register(req.body, redis, function(result){
     //console.log(result)
     if(result === 'Registered'){
+      console.log(result)
       res.json(result)
     }
     else{
-      return res.status(400).json(result)
+      console.log(result)
+      res.json(result)
     }
   })
+});
+
+router.post('/api/login', [
+  body().isObject(),
+  body('email').isEmail(),
+  body('password').isString()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  console.log(req.body)  
+
+  login(req.body, redis, function(result){
+    //console.log(result)
+    if(result === 'Correct'){
+      req.session.user = req.body['email'];
+      req.session.save;
+      res.json(result)
+    }
+    else{
+      req.session.destroy();
+      res.json(result)
+    }
+  })
+});
+
+//Get email
+router.get('/api/getEmail', (req, res) => {
+  //console.log(req.query)
+  if(checkSession(req)){
+      res.json(req.session.user)
+  }
 });
 
 router.post('/api/profile', [
@@ -123,6 +161,19 @@ router.post('/api/team/req', [
     console.log(result)
     res.json(result)
   })
+});
+
+//check session
+router.get('/api/checkSession', (req, res) => {
+  //console.log('Check Session')
+  checkSession(req, function(result){
+      if(result){
+        res.json('Active')
+      }
+      else{
+        res.json('Inactive')
+      }
+    });
 });
 
 
