@@ -11,6 +11,8 @@ const checkSession = require('../models/checkSession.js');
 const updateRelationships = require('../models/updateRelationships.js');
 const Redis = require('ioredis');
 const createEmployee = require('../models/createEmployee.js');
+const getTeamReqs = require('../models/getTeamReqs.js');
+const getReqs = require('../models/getReqs.js');
 
 let redisGraph = null;
 let redisSearch = null
@@ -164,6 +166,25 @@ router.post('/api/team', [
   })
 });
 
+router.get('/api/team', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  console.log(req.body)
+
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+
+  getTeam(req.query, redisGraph, function(result){
+    console.log(result)
+    res.json(result)
+  })
+});
+
 router.post('/api/team/req', [
   body().isObject()
 ], async (req, res) => {
@@ -178,6 +199,44 @@ router.post('/api/team/req', [
   //Add validation for JSON fields, possibly using express-validator
 
   createReq(req.body, redisGraph, function(result){
+    console.log(result)
+    res.json(result)
+  })
+});
+
+router.get('/api/team/reqs', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  console.log(req.query)
+
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+
+  getTeamReqs(req.query, redisGraph, function(result){
+    console.log(result)
+    res.json(result)
+  })
+});
+
+router.get('/api/reqs', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  console.log(req.query)
+
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+
+  getReqs(req.query, redisGraph, function(result){
     console.log(result)
     res.json(result)
   })
