@@ -1,4 +1,4 @@
-const getTeamReqs = async (body, redis, callback) => {
+const getTeam = async (body, redis, callback) => {
     const pipeline = redis.pipeline();
     expectedResponses = 0
     //Convert JSON to string and remove quotes from keys so that ioredis doesn't complain
@@ -27,4 +27,4 @@ const getTeamReqs = async (body, redis, callback) => {
     }
 }
 
-module.exports = getTeamReqs;
+module.exports = getTeam;

@@ -13,6 +13,9 @@ const Redis = require('ioredis');
 const createEmployee = require('../models/createEmployee.js');
 const getTeamReqs = require('../models/getTeamReqs.js');
 const getReqs = require('../models/getReqs.js');
+const getReqsApplied = require('../models/getReqsApplied.js');
+const applyForReq = require('../models/applyForReq.js');
+const getTeamReqApplications = require('../models/getTeamReqApplications.js');
 
 let redisGraph = null;
 let redisSearch = null
@@ -181,7 +184,7 @@ router.get('/api/team', [
 
   getTeam(req.query, redisGraph, function(result){
     console.log(result)
-    res.json(result)
+    res.json(JSON.stringify(result))
   })
 });
 
@@ -200,7 +203,7 @@ router.post('/api/team/req', [
 
   createReq(req.body, redisGraph, function(result){
     console.log(result)
-    res.json(result)
+    res.json(JSON.stringify(result))
   })
 });
 
@@ -219,7 +222,26 @@ router.get('/api/team/reqs', [
 
   getTeamReqs(req.query, redisGraph, function(result){
     console.log(result)
-    res.json(result)
+    res.json(JSON.stringify(result))
+  })
+});
+
+router.get('/api/team/applications', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  console.log(req.query)
+
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+
+  getTeamReqApplications(req.query, redisGraph, function(result){
+    console.log(result)
+    res.json(JSON.stringify(result))
   })
 });
 
@@ -237,6 +259,44 @@ router.get('/api/reqs', [
   //Add validation for JSON fields, possibly using express-validator
 
   getReqs(req.query, redisGraph, function(result){
+    console.log(result)
+    res.json(JSON.stringify(result))
+  })
+});
+
+router.get('/api/reqs/applied', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  console.log(req.query)
+
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+
+  getReqsApplied(req.query, redisGraph, function(result){
+    console.log(result)
+    res.json(JSON.stringify(result))
+  })
+});
+
+router.post('/api/req/apply', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  console.log(req.body)
+
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+
+  applyForReq(req.body, redisGraph, function(result){
     console.log(result)
     res.json(result)
   })

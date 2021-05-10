@@ -20,8 +20,19 @@ const getReqs = async (body, redis, callback) => {
         for(var req of response){
             var tempReq = {}
             tempReq['id'] = req[0][0][1]
-            tempReq['properties'] = req[0][2][1]
-            reqList += tempReq
+            tempReq['properties'] = {}
+
+            for(var prop of req[0][2][1]){
+                if(prop[1][0] === '['){
+                    tempReq['properties'][prop[0]] = prop[1].replace('[', '').replace(']', '').split(',');
+                }
+                else{
+                    tempReq['properties'][prop[0]] = prop[1]
+                }
+                
+            }
+            
+            reqList.push(tempReq)
         }
         console.log(`Reqs Retrieved`);
         callback(reqList);
