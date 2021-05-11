@@ -15,6 +15,9 @@ const getTeamReqs = require('../models/getTeamReqs.js');
 const getReqs = require('../models/getReqs.js');
 const getReqsApplied = require('../models/getReqsApplied.js');
 const applyForReq = require('../models/applyForReq.js');
+const rejectReq = require('../models/rejectReq.js');
+const acceptReq = require('../models/acceptReq.js');
+const deleteReq = require('../models/deleteReq.js');
 const getTeamReqApplications = require('../models/getTeamReqApplications.js');
 
 let redisGraph = null;
@@ -297,6 +300,63 @@ router.post('/api/req/apply', [
   //Add validation for JSON fields, possibly using express-validator
 
   applyForReq(req.body, redisGraph, function(result){
+    console.log(result)
+    res.json(result)
+  })
+});
+
+router.post('/api/req/delete', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  console.log(req.body)
+
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+
+  deleteReq(req.body, redisGraph, function(result){
+    console.log(result)
+    res.json(result)
+  })
+});
+
+router.post('/api/req/reject', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  console.log(req.body)
+
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+
+  rejectReq(req.body, redisGraph, function(result){
+    console.log(result)
+    res.json(result)
+  })
+});
+
+router.post('/api/req/accept', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  console.log(req.body)
+
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+
+  acceptReq(req.body, redisGraph, function(result){
     console.log(result)
     res.json(result)
   })
