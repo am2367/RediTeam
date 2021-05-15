@@ -5,7 +5,8 @@ const createNodes = async (redis, callback) => {
     const associateLevelDetailMapping = ["{name: 'Level 1', level: 1, years_experience: 1, cost: 75000}",
                                          "{name: 'Level 2', level: 2, years_experience: 3, cost: 100000}",
                                          "{name: 'Level 3', level: 3, years_experience: 5, cost: 150000}",
-                                         "{name: 'Level 4', level: 4, years_experience: 10, cost: 200000}"]
+                                         "{name: 'Level 4', level: 4, years_experience: 10, cost: 200000}",
+                                         "{name: 'Manager', level: 'Manager'}"]
 
     for(var detail of associateLevelDetailMapping){
         pipeline.call("GRAPH.QUERY", "Employee", `MERGE(:AssociateLevel${detail})`)

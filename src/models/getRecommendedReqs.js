@@ -1,16 +1,29 @@
-const getTeamReqs = async (id, body, redis, callback) => {
+const getRecommendedReqs = async (id, body, redis, callback) => {
+    newBody = JSON.stringify(body).replace(/"([^"]+)":/g, '$1:');
+
     const pipeline = redis.pipeline();
     expectedResponses = 0
     //Convert JSON to string and remove quotes from keys so that ioredis doesn't complain
 
     //Create relationship to associate level if not exists
-    pipeline.call("GRAPH.QUERY", "Employee", `MATCH(e:Manager{id:${id}})--(t:Team)--(r:Req) Return r`)
+    const query = ` MATCH(e:Employee{id:${id}})
+                    MATCH (e)-[:Is_Closest_To]-(l) 
+                    MATCH (e)-[:Is_Associate_Level]-(a) 
+                    MATCH (e)-[:Has_Skill]-(s) MATCH(r:Req) 
+                    WHERE NOT (e)-[:Applied_For]->(r)
+                        AND (r)-[:Requires_Office_Location]-(l)
+                        AND (r)-[:Requires_Associate_Level]-(a) 
+                        AND (r)-[:Requires_Skill]-(s)
+                    MERGE (e)-[:Recommended_Req]->(r)
+                    RETURN DISTINCT r`
+
+    pipeline.call("GRAPH.QUERY", "Employee", query)
     expectedResponses += 1
 
     const responses = await pipeline.exec();
 
     // Need to update below to check response for each pipeline call instead of just first one
-    if (responses.length === expectedResponses && responses[0][1] !== null){        
+    if (responses.length === expectedResponses && responses[0][1] !== null){    
         console.log(responses)    
         response = responses[0][1][1]
 
@@ -32,12 +45,12 @@ const getTeamReqs = async (id, body, redis, callback) => {
             
             reqList.push(tempReq)
         }
-        console.log(`Reqs Retrieved For Team`);
+        console.log(`Recommended Reqs Retrieved`);
         callback(reqList);
     } else {
         console.log(responses);
-        callback('Error retrieving reqs');
+        callback('Error retrieving recommended reqs');
     }
 }
 
-module.exports = getTeamReqs;
+module.exports = getRecommendedReqs;

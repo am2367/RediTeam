@@ -1,4 +1,4 @@
-const getReqs = async (body, redis, callback) => {
+const getReqs = async (id, body, redis, callback) => {
     newBody = JSON.stringify(body).replace(/"([^"]+)":/g, '$1:');
 
     const pipeline = redis.pipeline();
@@ -6,11 +6,18 @@ const getReqs = async (body, redis, callback) => {
     //Convert JSON to string and remove quotes from keys so that ioredis doesn't complain
 
     //Create relationship to associate level if not exists
-    pipeline.call("GRAPH.QUERY", "Employee", `MATCH(r:Req${newBody}) Return r`)
+    const query = ` MATCH(e:Employee{id:${id}})--(t:Team)
+                    MATCH(req:Req${newBody}) 
+                    WHERE NOT (e)-[:Applied_For]->(req) 
+                    AND NOT (req)-[:Is_Hiring_For]->(t)
+                    AND NOT (e)-[:Recommended_Req]->(req)
+                    RETURN req`
+
+    pipeline.call("GRAPH.QUERY", "Employee", query)
     expectedResponses += 1
 
     const responses = await pipeline.exec();
-
+    console.log(JSON.stringify(responses))
     // Need to update below to check response for each pipeline call instead of just first one
     if (responses.length === expectedResponses && responses[0][1] !== null){    
         console.log(responses)    

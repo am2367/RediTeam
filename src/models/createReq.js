@@ -1,4 +1,4 @@
-const createReq = async (body, redis, callback) => {
+const createReq = async (id, body, redis, callback) => {
     const pipeline = redis.pipeline();
     expectedResponses = 0
     //Convert JSON to string and remove quotes from keys so that ioredis doesn't complain
@@ -25,11 +25,11 @@ const createReq = async (body, redis, callback) => {
 
     //Create team node if not exists
     //Create relationship to team if not exists
-    pipeline.call("GRAPH.QUERY", "Employee", `MATCH(req:Req${newBody}) MERGE(t:Team{name:"${body['teamName']}"}) MERGE(req)-[r:Hiring_For]->(t)`)
+    pipeline.call("GRAPH.QUERY", "Employee", `MATCH(req:Req${newBody}) MATCH(e:Manager{id:${id}})--(t:Team) MERGE(req)-[r:Hiring_For]->(t) SET req.teamName=t.name SET req.manager=e.name`)
     expectedResponses += 1
 
     //Create relationship to manager if not exists
-    pipeline.call("GRAPH.QUERY", "Employee", `MATCH(req:Req${newBody}) MERGE(manager:Employee{name:"${body['manager']}"}) MERGE(req)-[r:Hiring_Manager]->(manager)`)
+    pipeline.call("GRAPH.QUERY", "Employee", `MATCH(req:Req${newBody}) MATCH(e:Manager{id:${id}}) MERGE(req)-[r:Hiring_Manager]->(e)`)
     expectedResponses += 1
 
     const responses = await pipeline.exec();

@@ -7,17 +7,22 @@ const login = require('../models/login.js');
 const createNodes = require('../models/createNodes.js');
 const updateTeam = require('../models/updateTeam.js');
 const createReq = require('../models/createReq.js');
+const getEmployeeId = require('../models/getEmployeeId.js');
+const getEmployee = require('../models/getEmployee.js');
 const checkSession = require('../models/checkSession.js');
-const updateRelationships = require('../models/updateRelationships.js');
 const Redis = require('ioredis');
 const createEmployee = require('../models/createEmployee.js');
 const getTeamReqs = require('../models/getTeamReqs.js');
+const getTeamMembers = require('../models/getTeamMembers.js');
+const getTeamManager = require('../models/getTeamManager.js');
 const getReqs = require('../models/getReqs.js');
+const getRecommendedReqs = require('../models/getRecommendedReqs.js');
 const getReqsApplied = require('../models/getReqsApplied.js');
 const applyForReq = require('../models/applyForReq.js');
 const rejectReq = require('../models/rejectReq.js');
 const acceptReq = require('../models/acceptReq.js');
 const deleteReq = require('../models/deleteReq.js');
+const cancelReq = require('../models/cancelReq.js');
 const getTeamReqApplications = require('../models/getTeamReqApplications.js');
 
 let redisGraph = null;
@@ -82,7 +87,7 @@ router.post('/api/register', [
     return res.status(400).json({ errors: errors.array() });
   }
 
-  console.log(req.body)
+  console.log('/api/register', req.body)
 
   register(req.body, redisSearch, function(result){
     //console.log(result)
@@ -97,6 +102,12 @@ router.post('/api/register', [
   })
 });
 
+router.get('/api/logout', (req, res) => {
+  //console.log(req.query)
+  req.session.user = null
+  res.json('Logged Out')
+});
+
 router.post('/api/login', [
   body().isObject(),
   body('email').isEmail(),
@@ -107,7 +118,7 @@ router.post('/api/login', [
     return res.status(400).json({ errors: errors.array() });
   }
 
-  console.log(req.body)  
+  console.log('/api/login', req.body)  
 
   login(req.body, redisSearch, function(result){
     //console.log(result)
@@ -124,7 +135,7 @@ router.post('/api/login', [
 });
 
 //Get email
-router.get('/api/getEmail', (req, res) => {
+router.get('/api/email', (req, res) => {
   //console.log(req.query)
   if(checkSession(req)){
       res.json(req.session.user)
@@ -139,17 +150,57 @@ router.post('/api/profile', [
     return res.status(400).json({ errors: errors.array() });
   }
   
-  console.log(req.body)
+  console.log('/api/profile', req.body)
 
   //TODO
   //Add validation for JSON fields, possibly using express-validator
   //Get user's username/ID from session and include in JSON when creating graph node
+  if(checkSession(req)){
+    getEmployeeId(req, redisGraph, function(result){
+      if(result === "Error Retrieving Profile"){
+        res.json(result)
+      }
+      req.body['id'] = parseInt(result)
+      createEmployee(req.body, redisGraph, function(result){
+        console.log(result)
+        res.json(result)
+      })
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
+    
+});
 
-  createEmployee(req.body, redisGraph, function(result){
-    console.log(result)
-    res.json(result)
-  })
-
+router.get('/api/profile', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  console.log('/api/profile', req.query)
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+  //Get user's username/ID from session and include in JSON when creating graph node
+  if(checkSession(req)){
+    getEmployeeId(req, redisGraph, function(result){
+      if(result === "Error Retrieving Profile"){
+        res.json(result)
+      }
+      else{
+        console.log(result)
+        getEmployee(result, redisGraph, function(result){
+          console.log(result)
+          res.json(result)
+        })
+      }
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
     
 });
 
@@ -161,18 +212,22 @@ router.post('/api/team', [
     return res.status(400).json({ errors: errors.array() });
   }
   
-  console.log(req.body)
+  console.log('/api/team', req.body)
 
   //TODO
   //Add validation for JSON fields, possibly using express-validator
-
-  updateTeam(req.body, redisGraph, function(result){
-    console.log(result)
-    res.json(result)
-  })
+  if(checkSession(req)){
+    updateTeam(req.body, redisGraph, function(result){
+      console.log(result)
+      res.json(result)
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
 });
 
-router.get('/api/team', [
+router.get('/api/team/members', [
   body().isObject()
 ], async (req, res) => {
   const errors = validationResult(req);
@@ -180,15 +235,52 @@ router.get('/api/team', [
     return res.status(400).json({ errors: errors.array() });
   }
   
-  console.log(req.body)
+  console.log('/api/team/members', req.body)
 
   //TODO
   //Add validation for JSON fields, possibly using express-validator
+  if(checkSession(req)){
+    getEmployeeId(req, redisGraph, function(result){
+      if(result === "Error Retrieving Profile"){
+        res.json(result)
+      }
+      getTeamMembers(result, req.query, redisGraph, function(result){
+        console.log(result)
+        res.json(JSON.stringify(result))
+      })
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
+});
 
-  getTeam(req.query, redisGraph, function(result){
-    console.log(result)
-    res.json(JSON.stringify(result))
-  })
+router.get('/api/team/manager', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  console.log('/api/team/manager', req.body)
+
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+  if(checkSession(req)){
+    getEmployeeId(req, redisGraph, function(result){
+      if(result === "Error Retrieving Profile"){
+        res.json(result)
+      }
+      getTeamManager(result, req.query, redisGraph, function(result){
+        console.log(result)
+        res.json(JSON.stringify(result))
+      })
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
 });
 
 router.post('/api/team/req', [
@@ -199,15 +291,24 @@ router.post('/api/team/req', [
     return res.status(400).json({ errors: errors.array() });
   }
   
-  console.log(req.body)
+  console.log('/api/team/req', req.body)
 
   //TODO
   //Add validation for JSON fields, possibly using express-validator
-
-  createReq(req.body, redisGraph, function(result){
-    console.log(result)
-    res.json(JSON.stringify(result))
-  })
+  if(checkSession(req)){
+    getEmployeeId(req, redisGraph, function(result){
+      if(result === "Error Retrieving Profile"){
+        res.json(result)
+      }
+      createReq(result, req.body, redisGraph, function(result){
+        console.log(result)
+        res.json(JSON.stringify(result))
+      })
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
 });
 
 router.get('/api/team/reqs', [
@@ -218,15 +319,24 @@ router.get('/api/team/reqs', [
     return res.status(400).json({ errors: errors.array() });
   }
   
-  console.log(req.query)
+  console.log('/api/team/reqs', req.query)
 
   //TODO
   //Add validation for JSON fields, possibly using express-validator
-
-  getTeamReqs(req.query, redisGraph, function(result){
-    console.log(result)
-    res.json(JSON.stringify(result))
-  })
+  if(checkSession(req)){
+    getEmployeeId(req, redisGraph, function(result){
+      if(result === "Error Retrieving Profile"){
+        res.json(result)
+      }
+      getTeamReqs(result, req.query, redisGraph, function(result){
+        console.log(result)
+        res.json(JSON.stringify(result))
+      })
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
 });
 
 router.get('/api/team/applications', [
@@ -237,15 +347,24 @@ router.get('/api/team/applications', [
     return res.status(400).json({ errors: errors.array() });
   }
   
-  console.log(req.query)
+  console.log('/api/team/applications', req.query)
 
   //TODO
   //Add validation for JSON fields, possibly using express-validator
-
-  getTeamReqApplications(req.query, redisGraph, function(result){
-    console.log(result)
-    res.json(JSON.stringify(result))
-  })
+  if(checkSession(req)){
+    getEmployeeId(req, redisGraph, function(result){
+      if(result === "Error Retrieving Profile"){
+        res.json(result)
+      }
+      getTeamReqApplications(result, redisGraph, function(result){
+        console.log(result)
+        res.json(JSON.stringify(result))
+      })
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
 });
 
 router.get('/api/reqs', [
@@ -256,15 +375,52 @@ router.get('/api/reqs', [
     return res.status(400).json({ errors: errors.array() });
   }
   
-  console.log(req.query)
+  console.log('/api/reqs', req.query)
 
   //TODO
   //Add validation for JSON fields, possibly using express-validator
+  if(checkSession(req)){
+    getEmployeeId(req, redisGraph, function(result){
+      if(result === "Error Retrieving Profile"){
+        res.json(result)
+      }
+      getReqs(result, req.query, redisGraph, function(result){
+        console.log(result)
+        res.json(JSON.stringify(result))
+      })
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
+});
 
-  getReqs(req.query, redisGraph, function(result){
-    console.log(result)
-    res.json(JSON.stringify(result))
-  })
+router.get('/api/reqs/recommended', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  console.log('/api/reqs/recommended', req.query)
+
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+  if(checkSession(req)){
+    getEmployeeId(req, redisGraph, function(result){
+      if(result === "Error Retrieving Profile"){
+        res.json(result)
+      }
+      getRecommendedReqs(result, req.query, redisGraph, function(result){
+        console.log(result)
+        res.json(JSON.stringify(result))
+      })
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
 });
 
 router.get('/api/reqs/applied', [
@@ -275,15 +431,24 @@ router.get('/api/reqs/applied', [
     return res.status(400).json({ errors: errors.array() });
   }
   
-  console.log(req.query)
+  console.log('/api/reqs/applied', req.query)
 
   //TODO
   //Add validation for JSON fields, possibly using express-validator
-
-  getReqsApplied(req.query, redisGraph, function(result){
-    console.log(result)
-    res.json(JSON.stringify(result))
-  })
+  if(checkSession(req)){
+    getEmployeeId(req, redisGraph, function(result){
+      if(result === "Error Retrieving Profile"){
+        res.json(result)
+      }
+      getReqsApplied(result, redisGraph, function(result){
+        console.log(result)
+        res.json(JSON.stringify(result))
+      })
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
 });
 
 router.post('/api/req/apply', [
@@ -294,15 +459,24 @@ router.post('/api/req/apply', [
     return res.status(400).json({ errors: errors.array() });
   }
   
-  console.log(req.body)
+  console.log('/api/req/apply', req.body)
 
   //TODO
   //Add validation for JSON fields, possibly using express-validator
-
-  applyForReq(req.body, redisGraph, function(result){
-    console.log(result)
-    res.json(result)
-  })
+  if(checkSession(req)){
+    getEmployeeId(req, redisGraph, function(result){
+      if(result === "Error Retrieving Profile"){
+        res.json(result)
+      }
+      applyForReq(result, req.body, redisGraph, function(result){
+        console.log(result)
+        res.json(result)
+      })
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
 });
 
 router.post('/api/req/delete', [
@@ -313,15 +487,47 @@ router.post('/api/req/delete', [
     return res.status(400).json({ errors: errors.array() });
   }
   
-  console.log(req.body)
+  console.log('/api/req/delete', req.body)
 
   //TODO
   //Add validation for JSON fields, possibly using express-validator
+  if(checkSession(req)){
+    deleteReq(req.body, redisGraph, function(result){
+      console.log(result)
+      res.json(result)
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
+});
 
-  deleteReq(req.body, redisGraph, function(result){
-    console.log(result)
-    res.json(result)
-  })
+router.post('/api/req/cancel', [
+  body().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  console.log('/api/req/cancel', req.body)
+
+  //TODO
+  //Add validation for JSON fields, possibly using express-validator
+  if(checkSession(req)){
+    getEmployeeId(req, redisGraph, function(result){
+      if(result === "Error Retrieving Profile"){
+        res.json(result)
+      }
+      cancelReq(result, req.body, redisGraph, function(result){
+        console.log(result)
+        res.json(result)
+      })
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
 });
 
 router.post('/api/req/reject', [
@@ -332,15 +538,19 @@ router.post('/api/req/reject', [
     return res.status(400).json({ errors: errors.array() });
   }
   
-  console.log(req.body)
+  console.log('/api/req/reject', req.body)
 
   //TODO
   //Add validation for JSON fields, possibly using express-validator
-
-  rejectReq(req.body, redisGraph, function(result){
-    console.log(result)
-    res.json(result)
-  })
+  if(checkSession(req)){
+    rejectReq(req.body, redisGraph, function(result){
+      console.log(result)
+      res.json(result)
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
 });
 
 router.post('/api/req/accept', [
@@ -351,15 +561,19 @@ router.post('/api/req/accept', [
     return res.status(400).json({ errors: errors.array() });
   }
   
-  console.log(req.body)
+  console.log('/api/req/accept', req.body)
 
   //TODO
   //Add validation for JSON fields, possibly using express-validator
-
-  acceptReq(req.body, redisGraph, function(result){
-    console.log(result)
-    res.json(result)
-  })
+  if(checkSession(req)){
+    acceptReq(req.body, redisGraph, function(result){
+      console.log(result)
+      res.json(result)
+    })
+  }
+  else{
+    res.redirect('/login');
+  }
 });
 
 //check session

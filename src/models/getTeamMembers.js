@@ -1,11 +1,10 @@
-const { json } = require("body-parser");
-
-const getTeamReqApplications = async (id, redis, callback) => {
+const getTeamMembers = async (id, body, redis, callback) => {
     const pipeline = redis.pipeline();
     expectedResponses = 0
     //Convert JSON to string and remove quotes from keys so that ioredis doesn't complain
-    console.log(id)
-    pipeline.call("GRAPH.QUERY", "Employee", `MATCH(manager:Manager{id:${id}})--(t:Team)--(r:Req) MATCH (r)<-[:Applied_For]-(e:Employee) Return e, r`)
+
+    //Create relationship to associate level if not exists
+    pipeline.call("GRAPH.QUERY", "Employee", `MATCH(n{id:${id}})--(t:Team) MATCH(e:Employee)-[:Is_Part_Of]->(t) Return e`)
     expectedResponses += 1
 
     const responses = await pipeline.exec();
@@ -37,12 +36,12 @@ const getTeamReqApplications = async (id, redis, callback) => {
             }
             respList1.push(temp)
         }
-        console.log(`Team Req Applications Retrieved`);
+        console.log(`Team Members Retrieved`);
         callback(respList1);
     } else {
         console.log(responses);
-        callback('Error retrieving team req applications');
+        callback('Error retrieving team members');
     }
 }
 
-module.exports = getTeamReqApplications;
+module.exports = getTeamMembers;
