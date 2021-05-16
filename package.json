@@ -3,12 +3,11 @@
   "version": "0.0.1",
   "main": "src/server.js",
   "scripts": {
-    "start": "npm run prod",
+    "start": "npm run server-prod",
     "client": "cd client && npm run start",
     "server-dev": "cd src && nodemon --max-old-space-size=4096 server.js",
     "server-prod": "cd src && node server.js",
     "dev": "concurrently --kill-others-on-fail \"npm run server-dev\" \"npm run client\"",
-    "prod": "concurrently --kill-others-on-fail \"npm run server-prod\" \"npm run client\"",
     "build": "cd client && npm install"
   },
   "dependencies": {

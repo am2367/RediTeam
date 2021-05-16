@@ -34,6 +34,7 @@ app.use(session({
     prefix: `session:`,
   })
 }));
+app.use(express.static(`${__dirname}/client/build`));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
