@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-const register = async (req, redis, callback) => {
+const register = async (id, req, redis, callback) => {
     const emailAddress = req["email"].replace(/\./g, '\\.').replace(/\@/g, '\\@');
 
     const searchResults = await redis.call('FT.SEARCH', 'usersidx', `@email:{${emailAddress}}`, 'LIMIT', '0', '1')
@@ -11,9 +11,6 @@ const register = async (req, redis, callback) => {
     }
     console.log(req["password"])
     const passwordHash = await bcrypt.hash(req["password"], 10)
-
-    const id = Math.floor(Math.random() * 1000 + 1000);
-    console.log(id)
 
     const obj = {"id" : id, "email" : req['email'], 'password' : passwordHash}
     console.log(obj)

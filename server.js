@@ -28,7 +28,7 @@ app.use(session({
   secret: 'CapOne',
   name: 'RediTeam',
   resave: false,
-  cookie: {maxAge: 600000},
+  cookie: {maxAge: 1200000},
   saveUninitialized: true,
   store: new RedisStore({
     client: redis,

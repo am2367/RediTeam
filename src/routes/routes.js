@@ -90,7 +90,10 @@ router.post('/api/register', [
 
   console.log('/api/register', req.body)
 
-  register(req.body, redisSearch, function(result){
+  const id = Math.floor(Math.random() * 1000 + 1000);
+  // console.log(id)
+    
+  register(id, req.body, redisSearch, function(result){
     //console.log(result)
     if(result === 'Registered'){
       console.log(result)

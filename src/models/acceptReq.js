@@ -7,7 +7,7 @@ const acceptReq = async (body, redis, callback) => {
     //Delete relationship to old team
     //Delete req
     //Create relationship to new team
-    pipeline.call("GRAPH.QUERY", "Employee", `MATCH(e:Employee{id:${body['id']}}) MATCH(req:Req) WHERE ID(req)=${body['reqId']} MATCH(req)--(newTeam:Team)  MATCH (e)-[rel:Is_Part_Of]-(:Team) DELETE rel DELETE req MERGE(e)-[r:Is_Part_Of]->(newTeam)`)
+    pipeline.call("GRAPH.QUERY", "Employee", `MATCH(e:Employee{id:${body['id']}}) MATCH(req:Req) WHERE ID(req)=${body['reqId']} MATCH(req)--(newTeam:Team)  MATCH (e)-[rel:Is_Part_Of]-(:Team) SET e.teamName=newTeam.name DELETE rel DELETE req MERGE(e)-[r:Is_Part_Of]->(newTeam)`)
     expectedResponses += 1
 
     const responses = await pipeline.exec();

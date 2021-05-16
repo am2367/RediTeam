@@ -53,15 +53,11 @@ const styles = theme => ({
 class Register extends React.Component {
     state = {
         showPassword: false,
-        first_nameError: false,
-        last_nameError: false,
         emailError: false,
         passwordError: false,
         confirmPasswordError: false,
         password: '',
         confirmPassword: '',
-        firstName: '',
-        lastName: '',
         email: '',
         age: ''
       }
@@ -116,16 +112,7 @@ class Register extends React.Component {
     validation = () => {
         let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         let error = false;
-        this.setState({first_nameError: false, last_nameError: false, emailError: false, passwordError: false, confirmPasswordError: false})        
-        if(this.state.firstName === ''){
-            this.setState({first_nameError: true})
-            error = true;
-        }
-
-        if(this.state.lastName === ''){
-            this.setState({last_nameError: true})
-            error = true;
-        }
+        this.setState({emailError: false, passwordError: false, confirmPasswordError: false})        
         
         if(!this.isOkPass(this.state.password)){
             this.setState({passwordError: true})
@@ -142,8 +129,7 @@ class Register extends React.Component {
             error = true;
         }
 
-        var data = {firstName: this.state.firstName,
-                    lastName: this.state.lastName,
+        var data = {
                     email: this.state.email,
                     password: this.state.password};
         if(error){
@@ -176,26 +162,6 @@ class Register extends React.Component {
                     <Card>
                         <CardHeader title="Register"/>
                         <form style={{marginLeft: 10, marginBottom: 10, marginRight: 10}} id="form" className="form" onSubmit={this.handleRegister}>
-                            
-                            <TextField
-                                style={{width: '40%', marginTop: '2%', marginRight: '5%'}}
-                                label="First Name"
-                                id="first_name" 
-                                value={this.state.first_name}
-                                onChange={this.handleChange('firstName')}
-                                variant="outlined"
-                                error={this.state.first_nameError ? true : false}
-                            />
-
-                            <TextField
-                                style={{width: '40%', marginTop: '2%'}}
-                                label="Last Name"
-                                id="last_name" 
-                                value={this.state.last_name}
-                                onChange={this.handleChange('lastName')}
-                                variant="outlined"
-                                error={this.state.last_nameError ? true : false}
-                            />
 
                             <TextField
                                 style={{width: '85%', marginTop: '2%'}}

@@ -3,9 +3,9 @@ const rejectReq = async (body, redis, callback) => {
     expectedResponses = 0
     //Convert JSON to string and remove quotes from keys so that ioredis doesn't complain
     newBody = JSON.stringify(body).replace(/"([^"]+)":/g, '$1:');
-
+    console.log(body)
     //Delete relationship betweem employee and req
-    pipeline.call("GRAPH.QUERY", "Employee", `MATCH(e:Employee) WHERE ID(e)=${body['id']} MATCH(req:Req) WHERE ID(req)=${body['reqId']} MATCH (e)-[rel:Applied_For]-(req) DELETE rel`)
+    pipeline.call("GRAPH.QUERY", "Employee", `MATCH(:Employee{id:${body['id']}}) MATCH(req:Req) WHERE ID(req)=${body['reqId']} MATCH (e)-[rel:Applied_For]-(req) DELETE rel`)
     expectedResponses += 1
 
     const responses = await pipeline.exec();

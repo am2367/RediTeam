@@ -164,7 +164,7 @@ class ReqModal extends React.Component {
                         >
                             <MenuItem value={"New York"}>New York</MenuItem>
                             <MenuItem value={"Arlington"}>Arlington</MenuItem>
-                            <MenuItem value={"San Fransisco"}>San Fransisco</MenuItem>
+                            <MenuItem value={"San Francisco"}>San Fransisco</MenuItem>
                         </Select>
                     </FormControl>
 

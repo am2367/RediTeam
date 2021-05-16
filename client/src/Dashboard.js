@@ -3,9 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { withRouter } from 'react-router-dom';
 import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
 import Tabs from '@material-ui/core/Tabs';
-import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -13,11 +11,9 @@ import checkSession from './CheckSession.js';
 import moment from 'moment';
 import TopNav from './TopNav.js'
 import Profile from './Profile.js'
-import TeamCard from './TeamCard.js'
 import PropTypes from 'prop-types';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
@@ -26,6 +22,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import clsx from 'clsx';
 import Chip from '@material-ui/core/Chip';
 import ReqModal from './ReqModal.js';
+import createHistory from 'history/createBrowserHistory';
+const history = createHistory();
 
 const styles = theme => ({
   root: {
@@ -63,6 +61,9 @@ const styles = theme => ({
   },
   expandOpen: {
     transform: 'rotate(180deg)',
+  },
+  button: {
+    width: '33%',color: 'white', backgroundColor: '#3f51b5'
   }
 });
 
@@ -119,7 +120,7 @@ class Dashboard extends React.Component {
     .then(data=>{
         if(data){
             if(data.length === 0){
-              this.showProfile();
+              history.push('/Dashboard/Profile');
             }
             else{
               this.getTeamMembers();
@@ -274,8 +275,9 @@ class Dashboard extends React.Component {
     })
     .then(response => response.json())
     .then(data=>{
-        thisRef.getReqs()
         thisRef.getAppliedReqs()
+        thisRef.getReqs()
+        thisRef.getRecommendedReqs()
         if(data === "Applied for Req!"){
           alert(data);
         }
@@ -318,6 +320,7 @@ class Dashboard extends React.Component {
     .then(response => response.json())
     .then(data=>{
         thisRef.getReqs()
+        thisRef.getRecommendedReqs()
         thisRef.getAppliedReqs()
         if(data === "Req Application Cancelled!"){
           alert(data);
@@ -339,6 +342,7 @@ class Dashboard extends React.Component {
     })
     .then(response => response.json())
     .then(data=>{
+      thisRef.getTeamMembers()
       thisRef.getReqs();
       thisRef.getTeamApplications()
       thisRef.getTeamReqs()
@@ -362,6 +366,7 @@ class Dashboard extends React.Component {
     })
     .then(response => response.json())
     .then(data=>{
+        thisRef.getTeamApplications()
         thisRef.getTeamApplications()
         if(data === "Req Rejected!"){
           alert(data);
@@ -468,13 +473,13 @@ class Dashboard extends React.Component {
               [classes.expandOpen]: this.state.expanded,
             })}/>
           </IconButton>
-          {type === 'applied' ? <Button onClick={() => this.cancel(id)} size="small">
+          {type === 'applied' ? <Button onClick={() => this.cancel(id)} size="small"  className={classes.button}>
             Cancel
           </Button> : null}
-          {type === 'open' && this.state.profile['isManager'] === "true" ? <Button onClick={() => this.delete(id)} size="small">
+          {type === 'open' && this.state.profile['isManager'] === "true" ? <Button onClick={() => this.delete(id)} size="small" className={classes.button}>
             Delete
           </Button> : null}
-          {type === 'open' && !(this.state.profile['isManager'] === "true") ? <Button onClick={() => this.apply(id)} size="small">
+          {type === 'open' && !(this.state.profile['isManager'] === "true") ? <Button onClick={() => this.apply(id)} size="small" className={classes.button}>
             Apply
           </Button> : null}
         </CardActions>
@@ -515,11 +520,11 @@ class Dashboard extends React.Component {
             Manager: {manager}
           </Typography>
         </CardContent>
-        <CardActions>
-          {this.state.value === 2  && reqId? <Button onClick={() => this.rejectApplication(id, reqId)} style={{flex: 'auto', justifyContent: 'flex-end'}} size="small">
+        <CardActions style={{justifyContent: 'space-between', display: 'flex'}}>
+          {this.state.value === 2  && reqId? <Button onClick={() => this.rejectApplication(id, reqId)}  size="small" className={classes.button}>
             Reject
           </Button> : null}
-          {this.state.value === 2 && reqId ? <Button onClick={() => this.acceptApplication(id, reqId)} style={{flex: 'auto', justifyContent: 'flex-end'}} size="small">
+          {this.state.value === 2 && reqId ? <Button onClick={() => this.acceptApplication(id, reqId)}  size="small" className={classes.button}>
             Accept
           </Button> : null}
         </CardActions>
@@ -579,12 +584,13 @@ class Dashboard extends React.Component {
           <TopNav redirect={this.redirect} username={this.state.email}/>
           <Route exact path="/Dashboard/Profile" component={this.showProfile} />
           <Route exact path="/Dashboard" render={() => 
-            <Grid container xs={11} sm={11} md={11} lg={11} spacing={24} style={{margin: 'auto',  marginTop: '1rem', height: '80%' }}>
+            <Grid container xs={11} sm={11} md={11} lg={11} spacing={5} style={{margin: 'auto',  marginTop: '1rem', height: '85%' }}>
                 <Grid item  xs={10} sm={8} md={6} lg={6} style={{height: '100%'}}>
-                    <Card style={{height: '100%', width:'100%'}}>
+                    <Card style={{height: '100%', width:'100%', display: 'flex', flexDirection: 'column'}}>
                         <CardHeader style={{textAlign: 'center'}} title={this.state.profile['teamName']}/>
-                          <div style={{overflow: 'auto', height: '100%'}}>
-                            <Grid item  xs={10} sm={10} md={10} lg={10} style={{margin: 'auto'}}>
+                        <div style={{overflow: 'auto', height: '100%'}}>
+
+                            <Grid item  xs={10} sm={10} md={10} lg={10} style={{margin: 'auto', width: '100%'}}>
                                 <Card className={classes.req}>
                                   <CardContent>
                                     <Typography variant="h5" component="h2">
@@ -600,13 +606,13 @@ class Dashboard extends React.Component {
                                   </CardContent>
                                 </Card>
                             </Grid>
-                            {teamMembers}
-                          </div>
+                              {teamMembers}
+                            </div>
                     </Card>
                 </Grid>
 
                 <Grid item  xs={10} sm={8} md={6} lg={6} style={{height: '100%'}}>
-                    <Card style={{height: '100%', width:'100%'}}>
+                    <Card style={{height: '100%', width:'100%',display: 'flex', flexDirection: 'column'}}>
                         <CardHeader style={{textAlign: 'center'}} title="Reqs"/>
                         <Grid item  xs={10} sm={10} md={10} lg={10} style={{margin: 'auto', height: '75%'}}>
                           {this.state.profile['isManager'] === "true" ? <Button id='newReq' onClick={() => this.handleReqModalOpen()} className={classes.button} type="newReq" style={{width: '100%',color: 'white', backgroundColor: '#3f51b5', marginRight: '1%'}}>
@@ -626,7 +632,7 @@ class Dashboard extends React.Component {
                             textColor="primary"
                             fullWidth
                           >
-                            <Tab label="Open Reqs" />
+                            <Tab label={this.state.profile['isManager'] === "true" ? "Team Reqs" : "Open Reqs"} />
                             <Tab label="Applied" disabled={this.state.profile['isManager'] === "true"}/>
                             <Tab label="Applications" disabled={this.state.profile['isManager'] === "false"}/>
                           </Tabs>
@@ -634,7 +640,7 @@ class Dashboard extends React.Component {
                           {this.state.value === 0 && this.state.profile['isManager'] === "false" ? reqs('open', this.state.recommendedReqs, true) : null}
                           {
                             this.state.value === 0 && this.state.profile['isManager'] === "false" ? reqs('open', this.state.reqList, false) : 
-                            this.state.value === 0 && this.state.profile['isManager'] === "true" ? reqs('applications', this.state.teamReqList, false) :
+                            this.state.value === 0 && this.state.profile['isManager'] === "true" ? reqs('open', this.state.teamReqList, false) :
                             this.state.value === 1 ? reqs('applied', this.state.appliedReqList, false) : 
                             this.state.value === 2 ? applications : null
                           }

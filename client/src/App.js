@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import Login from './Login.js';
 import Register from './Register.js';
 import Dashboard from './Dashboard.js';
+const logo = require('./assets/redisLogo.png');
 
 const styles = theme => ({
   root: {
@@ -68,7 +69,11 @@ class App extends React.Component {
         <div className={classes.root}>
           <Route path="/Dashboard"  component={this.showDash} />
           <Route path="/Login" component={this.showLogin} />
-          <Route path="/Register" component={this.showRegister} />   
+          <Route path="/Register" component={this.showRegister} />
+            <Typography variant="body3" component="p" color="textSecondary" style={{position: "fixed", display: 'flex', justifyContent: 'center', bottom: '10px'}}>
+              Powered by
+              <img alt="Redis" src={logo} style={{width: '5%'}}></img>
+            </Typography>
         </div>
       </Router>  
       )
