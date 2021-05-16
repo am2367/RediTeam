@@ -441,7 +441,7 @@ class Dashboard extends React.Component {
     const Req = (type, id, name, teamName, manager, associateLevel, skills, officeLocation, description, recommended) => (
       <Card className={classes.req}>
         <CardContent>
-          <Typography className={classes.pos} color="textSecondary"style={{justifyContent: 'space-between', display: 'flex'}}>
+          <Typography className={classes.pos} color="textSecondary"style={{justifyContent: 'space-between', display: 'auto'}}>
             Req #{id} {recommended ? <Chip label={"Recommended"} /> : null}
           </Typography>
           <Typography variant="h5" component="h2">

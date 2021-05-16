@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
-const routes = require('./routes/routes');
+const routes = require('./src/routes/routes');
 const app = express();
 const bodyParser = require('body-parser');
 const RedisStore = require('connect-redis')(session);
@@ -28,6 +28,7 @@ app.use(session({
   secret: 'CapOne',
   name: 'RediTeam',
   resave: false,
+  cookie: {maxAge: 600000},
   saveUninitialized: true,
   store: new RedisStore({
     client: redis,
@@ -39,8 +40,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use('/', routes);
-
-
 
 const port = process.env.PORT || 4200;
 

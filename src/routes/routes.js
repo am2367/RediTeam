@@ -24,6 +24,7 @@ const acceptReq = require('../models/acceptReq.js');
 const deleteReq = require('../models/deleteReq.js');
 const cancelReq = require('../models/cancelReq.js');
 const getTeamReqApplications = require('../models/getTeamReqApplications.js');
+const path = require('path');
 
 let redisGraph = null;
 let redisSearch = null
@@ -589,7 +590,14 @@ router.get('/api/checkSession', (req, res) => {
     });
 });
 
-
-
+//if production > serve static files
+if (process.env.NODE_ENV === 'production') {
+  // Serve any static files
+  router.use(express.static(path.join(__dirname, '../../client/build')));
+  // Handle React routing, return all requests to React app
+  router.get('*', function(req, res) {
+  res.sendFile(path.join(__dirname, '../../client/build', 'index.html'));
+});
+};
 
 module.exports = router;
