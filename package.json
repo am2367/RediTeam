@@ -8,7 +8,7 @@
     "server-dev": "nodemon --max-old-space-size=4096 server.js",
     "server-prod": "set NODE_ENV=production&& node server.js",
     "dev": "concurrently --kill-others-on-fail \"npm run server-dev\" \"npm run client\"",
-    "build": "npm install && cd client && npm install"
+    "build": "npm install && cd client && npm install && npm run build"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
