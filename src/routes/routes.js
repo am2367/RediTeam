@@ -5,7 +5,6 @@ const { json } = require('body-parser');
 const register = require('../models/register.js');
 const login = require('../models/login.js');
 const createNodes = require('../models/createNodes.js');
-const updateTeam = require('../models/updateTeam.js');
 const createReq = require('../models/createReq.js');
 const getEmployeeId = require('../models/getEmployeeId.js');
 const getEmployee = require('../models/getEmployee.js');
@@ -208,28 +207,30 @@ router.get('/api/profile', [
     
 });
 
-router.post('/api/team', [
-  body().isObject()
-], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+//  TODO: Update Team Route
+//
+// router.post('/api/team', [
+//   body().isObject()
+// ], async (req, res) => {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     return res.status(400).json({ errors: errors.array() });
+//   }
   
-  console.log('/api/team', req.body)
+//   console.log('/api/team', req.body)
 
-  //TODO
-  //Add validation for JSON fields, possibly using express-validator
-  if(checkSession(req)){
-    updateTeam(req.body, redisGraph, function(result){
-      console.log(result)
-      res.json(result)
-    })
-  }
-  else{
-    res.redirect('/login');
-  }
-});
+//   //TODO
+//   //Add validation for JSON fields, possibly using express-validator
+//   if(checkSession(req)){
+//     updateTeam(req.body, redisGraph, function(result){
+//       console.log(result)
+//       res.json(result)
+//     })
+//   }
+//   else{
+//     res.redirect('/login');
+//   }
+// });
 
 router.get('/api/team/members', [
   body().isObject()

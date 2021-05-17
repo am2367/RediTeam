@@ -68,7 +68,7 @@ class App extends React.Component {
       <Router>
         <div className={classes.root}>
           <Route path="/Dashboard"  component={this.showDash} />
-          <Route path="/Login" component={this.showLogin} />
+          <Route exact path={["/","/Login"]} component={this.showLogin} />
           <Route path="/Register" component={this.showRegister} />
             <Typography variant="body3" component="p" color="textSecondary" style={{position: "fixed", display: 'flex', justifyContent: 'center', bottom: '10px'}}>
               Powered by
