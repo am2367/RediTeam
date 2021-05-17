@@ -95,7 +95,7 @@ router.post('/api/register', [
   register(id, req.body, redisSearch, function(result){
     //console.log(result)
     if(result === 'Registered'){
-      console.log(result)
+      // console.log(result)
       res.json(result)
     }
     else{
@@ -250,7 +250,7 @@ router.get('/api/team/members', [
         res.json(result)
       }
       getTeamMembers(result, req.query, redisGraph, function(result){
-        console.log(result)
+        // console.log(result)
         res.json(JSON.stringify(result))
       })
     })
@@ -278,7 +278,7 @@ router.get('/api/team/manager', [
         res.json(result)
       }
       getTeamManager(result, req.query, redisGraph, function(result){
-        console.log(result)
+        // console.log(result)
         res.json(JSON.stringify(result))
       })
     })
@@ -306,7 +306,7 @@ router.post('/api/team/req', [
         res.json(result)
       }
       createReq(result, req.body, redisGraph, function(result){
-        console.log(result)
+        // console.log(result)
         res.json(JSON.stringify(result))
       })
     })
@@ -334,7 +334,7 @@ router.get('/api/team/reqs', [
         res.json(result)
       }
       getTeamReqs(result, req.query, redisGraph, function(result){
-        console.log(result)
+        // console.log(result)
         res.json(JSON.stringify(result))
       })
     })
@@ -362,7 +362,7 @@ router.get('/api/team/applications', [
         res.json(result)
       }
       getTeamReqApplications(result, redisGraph, function(result){
-        console.log(result)
+        // console.log(result)
         res.json(JSON.stringify(result))
       })
     })
@@ -390,7 +390,7 @@ router.get('/api/reqs', [
         res.json(result)
       }
       getReqs(result, req.query, redisGraph, function(result){
-        console.log(result)
+        // console.log(result)
         res.json(JSON.stringify(result))
       })
     })
@@ -418,7 +418,7 @@ router.get('/api/reqs/recommended', [
         res.json(result)
       }
       getRecommendedReqs(result, req.query, redisGraph, function(result){
-        console.log(result)
+        // console.log(result)
         res.json(JSON.stringify(result))
       })
     })
@@ -446,7 +446,7 @@ router.get('/api/reqs/applied', [
         res.json(result)
       }
       getReqsApplied(result, redisGraph, function(result){
-        console.log(result)
+        // console.log(result)
         res.json(JSON.stringify(result))
       })
     })
@@ -474,7 +474,7 @@ router.post('/api/req/apply', [
         res.json(result)
       }
       applyForReq(result, req.body, redisGraph, function(result){
-        console.log(result)
+        // console.log(result)
         res.json(result)
       })
     })
@@ -498,7 +498,7 @@ router.post('/api/req/delete', [
   //Add validation for JSON fields, possibly using express-validator
   if(checkSession(req)){
     deleteReq(req.body, redisGraph, function(result){
-      console.log(result)
+      // console.log(result)
       res.json(result)
     })
   }
@@ -525,7 +525,7 @@ router.post('/api/req/cancel', [
         res.json(result)
       }
       cancelReq(result, req.body, redisGraph, function(result){
-        console.log(result)
+        // console.log(result)
         res.json(result)
       })
     })
@@ -549,7 +549,7 @@ router.post('/api/req/reject', [
   //Add validation for JSON fields, possibly using express-validator
   if(checkSession(req)){
     rejectReq(req.body, redisGraph, function(result){
-      console.log(result)
+      // console.log(result)
       res.json(result)
     })
   }
@@ -572,7 +572,7 @@ router.post('/api/req/accept', [
   //Add validation for JSON fields, possibly using express-validator
   if(checkSession(req)){
     acceptReq(req.body, redisGraph, function(result){
-      console.log(result)
+      // console.log(result)
       res.json(result)
     })
   }

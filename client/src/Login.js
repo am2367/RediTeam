@@ -65,7 +65,7 @@ class Login extends React.Component {
         let props = this.props;
         checkSession(function(result){
           if(result){
-            console.log('active')
+            // console.log('active')
             //props.history.push('/Dashboard');
           }
         })
@@ -112,7 +112,7 @@ class Login extends React.Component {
                 this.props.history.push('/Dashboard');
               }
               else {
-                console.log(data)
+                // console.log(data)
                 alert("Incorrect Credentials!");
               }
         })

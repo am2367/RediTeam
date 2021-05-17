@@ -4,7 +4,6 @@ const getTeamReqApplications = async (id, redis, callback) => {
     const pipeline = redis.pipeline();
     expectedResponses = 0
     //Convert JSON to string and remove quotes from keys so that ioredis doesn't complain
-    console.log(id)
     pipeline.call("GRAPH.QUERY", "Employee", `MATCH(manager:Manager{id:${id}})--(t:Team)--(r:Req) MATCH (r)<-[:Applied_For]-(e:Employee) Return e, r`)
     expectedResponses += 1
 
@@ -17,7 +16,7 @@ const getTeamReqApplications = async (id, redis, callback) => {
 
         respList1 = []
         for(var resp of response){
-            console.log(JSON.stringify(resp))
+            // console.log(JSON.stringify(resp))
             
             var temp = {}
 

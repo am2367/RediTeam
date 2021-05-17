@@ -11,7 +11,7 @@ const getTeamReqs = async (id, body, redis, callback) => {
 
     // Need to update below to check response for each pipeline call instead of just first one
     if (responses.length === expectedResponses && responses[0][1] !== null){        
-        console.log(responses)    
+        // console.log(responses)    
         response = responses[0][1][1]
 
         reqList = []

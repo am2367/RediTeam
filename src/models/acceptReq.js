@@ -11,10 +11,10 @@ const acceptReq = async (body, redis, callback) => {
     expectedResponses += 1
 
     const responses = await pipeline.exec();
-    console.log(JSON.stringify(responses))
+    // console.log(JSON.stringify(responses))
     // Need to update below to check response for each pipeline call instead of just first one
     if (responses.length === expectedResponses && responses[0][1] !== null){
-        console.log(responses[0][1])
+        // console.log(responses[0][1])
         callback('Req Accepted!');
     } else {
         console.log(responses);

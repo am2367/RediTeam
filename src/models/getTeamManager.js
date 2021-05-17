@@ -16,7 +16,7 @@ const getTeamManager = async (id, body, redis, callback) => {
 
         respList1 = []
         for(var resp of response){
-            console.log(JSON.stringify(resp))
+            // console.log(JSON.stringify(resp))
             
             var temp = {}
 

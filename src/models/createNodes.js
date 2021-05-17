@@ -28,7 +28,7 @@ const createNodes = async (redis, callback) => {
     //TODO
     //Need to update below to check response for each pipeline call instead of just first one
     if (responses.length === expectedResponses && responses[0][1] !== null){
-        console.log(responses[0][1])
+        // console.log(responses[0][1])
         callback('Nodes Created');
     } else {
         console.log(responses);

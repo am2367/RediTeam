@@ -9,11 +9,11 @@ const register = async (id, req, redis, callback) => {
         callback("Email is already taken")
         return;
     }
-    console.log(req["password"])
+    // console.log(req["password"])
     const passwordHash = await bcrypt.hash(req["password"], 10)
 
     const obj = {"id" : id, "email" : req['email'], 'password' : passwordHash}
-    console.log(obj)
+    // console.log(obj)
 
     const insertResults = redis.hset(`users:${id}`, obj)
     

@@ -12,18 +12,18 @@ const getEmployee = async (id, redis, callback) => {
 
     // Need to update below to check response for each pipeline call instead of just first one
     if (responses.length === expectedResponses && responses[0][1] !== null){    
-        console.log(responses)    
+        // console.log(responses)    
         response = responses[0][1][1]
 
         respList1 = []
         for(var resp of response){
-            console.log(JSON.stringify(resp))
+            // console.log(JSON.stringify(resp))
             
             var temp = {}
             
             for(var entry of resp){ 
                 if(entry){
-                    console.log(JSON.stringify(entry))
+                    // console.log(JSON.stringify(entry))
                     const label = entry[1][1][0]
                     temp[label] = {}
                     temp[label]['id'] = entry[0][1]

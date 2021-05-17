@@ -12,7 +12,7 @@ const getEmployeeId = async (req, redis, callback) => {
         return callback(searchResults[2][1])
     }
 
-    console.log(searchResults)
+    // console.log(searchResults)
     return callback('Error Retrieving Profile');
 }
 

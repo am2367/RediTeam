@@ -168,7 +168,7 @@ class Dashboard extends React.Component {
             // console.log(JSON.parse(data))
             this.setState({teamMembers: JSON.parse(data)})
         }else{
-          console.log(data)
+          // console.log(data)
           alert('Error Retreiving Team Members')
         }
     })
@@ -180,10 +180,10 @@ class Dashboard extends React.Component {
     .then(response => response.json())
     .then(data=>{
         if(data){
-            console.log(JSON.parse(data))
+            // console.log(JSON.parse(data))
             this.setState({teamManager: JSON.parse(data)[0]['Manager']['properties']})
         }else{
-          console.log(data)
+          // console.log(data)
           alert('Error Retreiving Team Manager')
         }
     })
@@ -199,7 +199,7 @@ class Dashboard extends React.Component {
             // console.log(JSON.parse(data))
             this.setState({reqList: JSON.parse(data)})
         }else{
-          console.log(data)
+          // console.log(data)
           alert('Error Retreiving Reqs')
         }
     })
@@ -214,7 +214,7 @@ class Dashboard extends React.Component {
             // console.log(JSON.parse(data))
             this.setState({recommendedReqs: JSON.parse(data)})
         }else{
-          console.log(data)
+          // console.log(data)
           alert('Error Retreiving Recommended Reqs')
         }
     })
@@ -229,7 +229,7 @@ class Dashboard extends React.Component {
             // console.log(JSON.parse(data))
             this.setState({teamReqList: JSON.parse(data)})
         }else{
-          console.log(data)
+          // console.log(data)
           alert('Error Retreiving Reqs')
         }
     })
@@ -244,7 +244,7 @@ class Dashboard extends React.Component {
             // console.log(JSON.parse(data))
             this.setState({appliedReqList: JSON.parse(data)})
         }else{
-          console.log(data)
+          // console.log(data)
           alert('Error Retreiving Applied Reqs')
         }
     })
@@ -259,7 +259,7 @@ class Dashboard extends React.Component {
             // console.log(JSON.parse(data))
             this.setState({applications: JSON.parse(data)})
         }else{
-          console.log(data)
+          // console.log(data)
           alert('Error Retreiving Applied Reqs')
         }
     })
@@ -282,7 +282,7 @@ class Dashboard extends React.Component {
           alert(data);
         }
         else {
-          console.log(data)
+          (data)
           alert("Error Applying for Req!");
         }
     })
@@ -303,7 +303,7 @@ class Dashboard extends React.Component {
           alert(data);
         }
         else {
-          console.log(data)
+          // console.log(data)
           alert("Error Deleting Req!");
         }
     })
@@ -326,7 +326,7 @@ class Dashboard extends React.Component {
           alert(data);
         }
         else {
-          console.log(data)
+          // console.log(data)
           alert("Error Cancelling Req Application!");
         }
     })
@@ -350,7 +350,7 @@ class Dashboard extends React.Component {
           alert(data);
         }
         else {
-          console.log(data)
+          // console.log(data)
           alert("Error Accepting Req!");
         }
     })
@@ -372,7 +372,7 @@ class Dashboard extends React.Component {
           alert(data);
         }
         else {
-          console.log(data)
+          // console.log(data)
           alert("Error Rejecting Req!");
         }
     })
