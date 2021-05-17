@@ -70,10 +70,12 @@ class App extends React.Component {
           <Route path="/Dashboard"  component={this.showDash} />
           <Route exact path={["/","/Login"]} component={this.showLogin} />
           <Route path="/Register" component={this.showRegister} />
-            <Typography variant="body3" component="p" color="textSecondary" style={{position: "fixed", display: 'flex', justifyContent: 'center', bottom: '10px'}}>
+          <a style={{width: '100%', position: "fixed", display: 'flex', justifyContent: 'center', bottom: '10px', alignItems: 'center'}}>
+            <Typography variant="body3" component="p" color="textSecondary">
               Powered by
-              <img alt="Redis" src={logo} style={{width: '5%'}}></img>
             </Typography>
+            <img alt="Redis" src={logo} style={{width: '5%'}}></img>
+          </a>
         </div>
       </Router>  
       )

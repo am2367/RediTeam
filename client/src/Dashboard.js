@@ -614,7 +614,7 @@ class Dashboard extends React.Component {
                 <Grid item  xs={10} sm={8} md={6} lg={6} style={{height: '100%'}}>
                     <Card style={{height: '100%', width:'100%',display: 'flex', flexDirection: 'column'}}>
                         <CardHeader style={{textAlign: 'center'}} title="Reqs"/>
-                        <Grid item  xs={10} sm={10} md={10} lg={10} style={{margin: 'auto', height: '75%'}}>
+                        <Grid item  xs={10} sm={10} md={10} lg={10} style={{height: '100%', width:'100%',display: 'flex', flexDirection: 'column', margin: 'auto'}}>
                           {this.state.profile['isManager'] === "true" ? <Button id='newReq' onClick={() => this.handleReqModalOpen()} className={classes.button} type="newReq" style={{width: '100%',color: 'white', backgroundColor: '#3f51b5', marginRight: '1%'}}>
                             New Req
                           </Button> : null}
