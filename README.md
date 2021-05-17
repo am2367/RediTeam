@@ -56,6 +56,17 @@ A RedisConf 2021 Hackathon Project that solves for the ineffiencies around inter
 * Future state it should be `Submit (Associate) -> Accept (Hiring Manager) -> Accept Acceptance (Associate) -> Accept Transfer (Current Manager)`
 * This would require that all parties agree on the transfer before it is completed
 
+## Technologies
+- Node.js
+- Express
+- ReactJS
+- Material UI
+- Redis
+- RedisSearch
+- RedisGraph
+
+![Screenshot](https://github.com/am2367/RediTeam/blob/master/client/src/assets/technologies.PNG?raw=true)
+
 ## Architecture Diagram
 
 * TO DO
