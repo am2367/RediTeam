@@ -1,6 +1,7 @@
 const register = require('../models/register.js');
 const createEmployee = require('../models/createEmployee.js');
 const createReq = require('../models/createReq.js');
+const createNodes = require('../models/createNodes.js');
 const Redis = require('ioredis');
 
 const populateFakeData = async () => {
@@ -10,6 +11,19 @@ const populateFakeData = async () => {
         port: "6379",
         password: ""
       });
+
+    redis.call('FT.CREATE', 'usersidx', 'ON', 'HASH', 'PREFIX', '1', 'users', 'SCHEMA', 'email', 'TAG', 'firstName', 'TEXT', 'lastName', 'TEXT', (err, result) => { 
+    if (err) {
+        console.log(err.message)
+    }
+    else{
+        console.log("Users index has been created")
+    }
+    })
+      
+    createNodes(redis, function(result){
+        console.log(result)
+    });
 
     const fakeLoginList = [
                         {

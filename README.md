@@ -256,9 +256,9 @@ A RedisConf 2021 Hackathon Project that solves for the ineffiencies around inter
 3. `docker pull redislabs/redismod`
 4. `docker run -p 6379:6379 redislabs/redismod`
 5. `npm run build`
-6. `npm run dev`
-7. In a seperate terminal run `npm run load`
+6. `npm run load`
   * You may get a bunch of errors. Ignore those.
+7. `npm run dev`
 
 You should now be able to navigate to `localhost:3000/Login` and log in using any of the emails from populated fake data or register a new users.
 
