@@ -68,7 +68,7 @@ class MenuAppBar extends React.Component {
             <Typography variant="title" color="inherit" className={classes.flex}>
               RediTeam
             </Typography>
-            {auth && (
+            {this.state.username ? auth && (
               <div>
                 <IconButton
                   aria-owns={open ? 'menu-appbar' : null}
@@ -97,7 +97,7 @@ class MenuAppBar extends React.Component {
                   <MenuItem onClick={this.logout}>Logout</MenuItem>
                 </Menu>
               </div>
-            )}
+            ): null}
           </Toolbar>
         </AppBar>
       </div>

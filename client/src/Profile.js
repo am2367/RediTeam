@@ -185,7 +185,7 @@ class Profile extends React.Component {
 
         return(
             <div style={{textAlign: 'center'}}>
-                <Grid item  xs={10} sm={8} md={4} lg={4} style={{textAlign: 'center', margin: 'auto', display: 'flex', marginTop: '5%'}}>
+                <Grid item  xs={10} sm={8} md={4} lg={4} style={{textAlign: 'center', margin: 'auto', marginTop: '5%'}}>
                     <Card>
                         <CardHeader title="Profile"/>
                         <form style={{marginLeft: 10, marginBottom: 10, marginRight: 10}} id="form" className="form" onSubmit={this.handleRegister}>

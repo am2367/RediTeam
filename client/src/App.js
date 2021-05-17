@@ -12,6 +12,8 @@ import Grid from '@material-ui/core/Grid';
 import Login from './Login.js';
 import Register from './Register.js';
 import Dashboard from './Dashboard.js';
+import TopNav from './TopNav.js'
+
 const logo = require('./assets/redisLogo.png');
 
 const styles = theme => ({
@@ -44,11 +46,11 @@ class App extends React.Component {
   };
 
   showLogin = () => {
-    return(<Login handleLogin={this.handleLogin}/>)
+    return(<div><TopNav/><Login handleLogin={this.handleLogin}/></div>)
   };
 
   showRegister = () => {
-    return(<Register />)
+    return(<div><TopNav/><Register /></div>)
   };
 
   handleLogin = () => {
