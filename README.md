@@ -131,7 +131,12 @@ A RedisConf 2021 Hackathon Project that solves for the ineffiencies around inter
       * officeLocation
       * programmingLanguages
       * description
-      
+
+## RedisGraph
+
+![Screenshot](https://github.com/am2367/RediTeam/blob/master/client/src/assets/graph_legend.jpg?raw=true)
+![Screenshot](https://github.com/am2367/RediTeam/blob/master/client/src/assets/graph.png?raw=true)
+
 ## RedisGraph Relationships
 
 - `(:Employee)-[:Has_Skill]->(:ProgrammingLanguage)`
