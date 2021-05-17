@@ -69,7 +69,7 @@ A RedisConf 2021 Hackathon Project that solves for the ineffiencies around inter
 
 ## Architecture Diagram
 
-* TO DO
+![Screenshot](https://github.com/am2367/RediTeam/blob/master/client/src/assets/architecture.png?raw=true)
 
 ## Data Types
 
