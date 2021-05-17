@@ -5,7 +5,7 @@
   "scripts": {
     "start": "npm run server-prod",
     "client": "cd client && npm run start",
-    "server-dev": "nodemon --max-old-space-size=4096 server.js",
+    "server-dev": "nodemon --max-old-space-size=7168 server.js",
     "server-prod": "set NODE_ENV=production&& node server.js",
     "dev": "concurrently --kill-others-on-fail \"npm run server-dev\" \"npm run client\"",
     "build": "npm install && cd client && npm install && npm run build",
@@ -21,7 +21,8 @@
     "express-validator": "^6.10.0",
     "ioredis": "^4.22.0",
     "node-fetch": "^2.6.1",
-    "concurrently": "^6.0.2"
+    "concurrently": "^6.0.2",
+    "nodemon": "^2.0.7"
   },
   "devDependencies": {
     "nodemon": "^2.0.7",

@@ -1,0 +1,22 @@
+{
+    "app_name": "RediTeam",
+    "description": "A RedisConf 2021 Hackathon Project that solves for the ineffiencies around internal transfers within a company",
+    "hidden": "true",
+    "rank": "21",
+    "type": "Full App",
+    "contributed_by": "Community",
+    "repo_url": "https://github.com/am2367/RediTeam",
+    "download_url": "https://github.com/am2367/RediTeam/archive/refs/heads/master.zip",
+    "hosted_url": "http://rediteam.herokuapp.com/",
+    "quick_deploy": "",
+    "deploy_buttons": [],
+    "language": ["Javascript"],
+    "redis_commands": [],
+    "redis_features": ["caching"],
+    "redis_modules": ["Redis", "RedisGraph", "RedisSearch"],
+    "app_image_urls": ["https://github.com/am2367/RediTeam/blob/master/client/src/assets/rediteamAssociateScreenshot.JPG?raw=true", "https://github.com/am2367/RediTeam/blob/master/client/src/assets/rediteamManagerScreenshot.JPG?raw=true"],
+    "youtube_url": "https://www.youtube.com/watch?v=9Fp_HP3nKgk&ab_channel=AlexM",
+    "special_tags": ["Hackathon"],
+    "verticals": ["Technology", "Human Resources", "HR"],
+    "markdown": "https://raw.githubusercontent.com/am2367/RediTeam/master/README.md"
+}
